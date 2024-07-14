@@ -2,6 +2,7 @@
 
 2024-07-14
     001: 命名优化 #Plan20240714002
+    002: 修复Onedrive上致命Bug（无法FileOpen） #Plan20240714001
 
 2023年10月08日
  - 优化：实现模块分离（WorkDModuleUnfinishedTasks）

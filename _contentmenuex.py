@@ -11,6 +11,7 @@ import libs.WorkDFSupport as utils
 import libs.WorkDCProgressBarUI as ProgressBarUI
 from modules.WorkDModuleUnfinishedTasks import WorkDModuleUnfinishedTasks
 from modules.WorkDModulePeriodicTasks import WorkDModulePeriodicTasks
+import tempfile
 
 menu = list[tuple]()
 
@@ -32,6 +33,7 @@ def 添加工作文件(path: str, config: dict = {}):
         return
     # 若.mpp文件不存在，则复制最近的文件中的任务到新文件中
     else:
+
         # 创建MS Project应用程序对象
         project = MSProjectEx()
         project.Visible = False
@@ -44,6 +46,7 @@ def 添加工作文件(path: str, config: dict = {}):
             project.Visible = True
             return
         else:
+
             # 若存在最新文件，打开并进行任务的提取与处理
             old_project_file = project.FileOpen(lastfile)
             pb.update_progress(10, "获取任务配置信息并创建新任务...")
@@ -51,7 +54,7 @@ def 添加工作文件(path: str, config: dict = {}):
             _func_ex_mpp = FUNC_EX_MPP.FUNC_EX_MPP(Pather(path).str())
             wdmut_1 = WorkDModuleUnfinishedTasks(Pather(path).str())
             wdmpt_2 = WorkDModulePeriodicTasks(Pather(path).str())
-            
+
             # 初始化存储任务的列表
             new_tasksA = list()
             obj_new_taskAT = list()
@@ -132,9 +135,15 @@ def 添加工作文件(path: str, config: dict = {}):
             wdmut_1.save(project, "UnfinishedTasks.mpp")
 
             # 代码结束 ##
-            shutil.copy(lastfile, str(Pather(path)(filename)))
 
-            new_project_file = project.FileOpen(str(Pather(path)(filename)))
+            # 创建一个临时文件，并获取其路径
+            with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+                temp_path = temp_file.name
+                print("临时文件", temp_path)
+            # shutil.copy(lastfile, str(Pather(path)(filename)))
+            shutil.copy(lastfile, temp_path)
+
+            new_project_file = project.FileOpen(temp_path)
 
             pb.update_progress(30, "清空旧任务...")
 
@@ -165,7 +174,9 @@ def 添加工作文件(path: str, config: dict = {}):
     new_project_file.SaveAs()
     project.FileClose(new_project_file)
     project.Visible = True
-    project.FileOpen(str(Pather(path)(filename)))
+    shutil.move(temp_path, str(Pather(path)(filename)))
+    # project.FileOpen(str(Pather(path)(filename)))
+    subprocess.run(["start", "", Pather(path)(filename).str()], shell=True)
 
 
 @_config.folder_limit
@@ -219,4 +230,4 @@ menu = [
 ]
 
 # 添加工作文件(
-#     r"F:\ProgramData\ONEDRIVE\pan987384390\OneDrive\新存储\PY-MYEXECUTION\工作-D级")
+#     r"G:\Program Data\ONEDRIVE\987384390\OneDrive\新存储\PY-MYEXECUTION\工作-D级\.sandbox")

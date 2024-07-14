@@ -7,7 +7,7 @@ import re
 from mysupport.MSProjectEx import MSProjectEx
 import FUNC_EX_MPP
 import subprocess
-import libs.WorkDFSupport as support
+import libs.WorkDFSupport as utils
 import libs.WorkDCProgressBarUI as ProgressBarUI
 from modules.WorkDModuleUnfinishedTasks import WorkDModuleUnfinishedTasks
 from modules.WorkDModulePeriodicTasks import WorkDModulePeriodicTasks
@@ -37,7 +37,7 @@ def 添加工作文件(path: str, config: dict = {}):
         project.Visible = False
 
         # 获取最新的.mpp文件
-        lastfile = support.getlastfile(Pather(path), "mpp")
+        lastfile = utils.getlastfile(Pather(path), "mpp")
         if lastfile == None:
             # 若不存在最新文件则新建.mpp文件
             project.Projects.Add().SaveAs(Pather(path)(filename).str())
@@ -120,7 +120,7 @@ def 添加工作文件(path: str, config: dict = {}):
                     "OutlineLevel", task.OutlineLevel)
                 new_tasksA.append(task_info)
 
-                support.append_subtasks_in_taskA(
+                utils.append_subtasks_in_taskA(
                     task, _func_ex_mpp, func, new_tasksA)
 
             # 关闭旧文件，打开周期性事件文件
@@ -138,7 +138,7 @@ def 添加工作文件(path: str, config: dict = {}):
 
             pb.update_progress(30, "清空旧任务...")
 
-            support.clear_project_tasks(new_project_file)
+            utils.clear_project_tasks(new_project_file)
             new_project_file.ProjectStart = datetime.datetime.now() + \
                 datetime.timedelta(hours=8)
 

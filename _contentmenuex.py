@@ -15,6 +15,7 @@ import tempfile
 
 menu = list[tuple]()
 
+# test
 
 @_config.添加工作文件
 def 添加工作文件(path: str, config: dict = {}):
